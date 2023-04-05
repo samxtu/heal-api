@@ -18,27 +18,13 @@ const constants_1 = require("./constants");
 const express_1 = __importDefault(require("express"));
 const apollo_server_express_1 = require("apollo-server-express");
 const type_graphql_1 = require("type-graphql");
-const User_1 = require("./resolvers/User");
 const ioredis_1 = __importDefault(require("ioredis"));
 const session = require("express-session");
 const connect_redis_1 = __importDefault(require("connect-redis"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
-const account_1 = require("./resolvers/account");
-const asset_1 = require("./resolvers/asset");
-const attendance_1 = require("./resolvers/attendance");
-const branch_1 = require("./resolvers/branch");
-const expense_1 = require("./resolvers/expense");
-const incentive_1 = require("./resolvers/incentive");
-const note_1 = require("./resolvers/note");
-const payment_1 = require("./resolvers/payment");
-const product_1 = require("./resolvers/product");
-const purchase_1 = require("./resolvers/purchase");
 const role_1 = require("./resolvers/role");
-const ror_1 = require("./resolvers/ror");
-const sale_1 = require("./resolvers/sale");
-const region_1 = require("./resolvers/region");
-const uploadFile_1 = require("./resolvers/uploadFile");
+const user_1 = require("./resolvers/user");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const conn = yield (0, typeorm_1.createConnection)({
         type: constants_1.DB_TYPE,
@@ -79,24 +65,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: yield (0, type_graphql_1.buildSchema)({
-            resolvers: [
-                User_1.UserResolver,
-                account_1.AccountResolver,
-                asset_1.AssetResolver,
-                attendance_1.AttendanceResolver,
-                branch_1.BranchResolver,
-                expense_1.ExpenseResolver,
-                incentive_1.IncentiveResolver,
-                note_1.NoteResolver,
-                payment_1.PaymentResolver,
-                product_1.ProductResolver,
-                purchase_1.PurchaseResolver,
-                region_1.RegionsResolver,
-                role_1.RoleResolver,
-                ror_1.RORResolver,
-                sale_1.SaleResolver,
-                uploadFile_1.FileResolver
-            ],
+            resolvers: [user_1.UserResolver, role_1.RoleResolver],
             validate: false,
         }),
         context: ({ req, res }) => ({ req, res, redis, conn }),

@@ -25,7 +25,7 @@ exports.RoleResolver = void 0;
 const isAuth_1 = require("../middleware/isAuth");
 const type_graphql_1 = require("type-graphql");
 const Role_1 = require("../entities/Role");
-const branch_1 = require("./branch");
+const user_1 = require("./user");
 let RoleResolver = class RoleResolver {
     addRole(name) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -88,7 +88,7 @@ let RoleResolver = class RoleResolver {
     }
 };
 __decorate([
-    (0, type_graphql_1.Mutation)(() => branch_1.BooleanResponse),
+    (0, type_graphql_1.Mutation)(() => user_1.BooleanResponse),
     (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
     __param(0, (0, type_graphql_1.Arg)("name", () => String)),
     __metadata("design:type", Function),
@@ -96,7 +96,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], RoleResolver.prototype, "addRole", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(() => branch_1.BooleanResponse),
+    (0, type_graphql_1.Mutation)(() => user_1.BooleanResponse),
     (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
     __param(0, (0, type_graphql_1.Arg)("id")),
     __param(1, (0, type_graphql_1.Arg)("name", () => String)),
@@ -105,7 +105,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], RoleResolver.prototype, "editRole", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(() => branch_1.BooleanResponse),
+    (0, type_graphql_1.Mutation)(() => user_1.BooleanResponse),
     (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
     __param(0, (0, type_graphql_1.Arg)("id")),
     __metadata("design:type", Function),

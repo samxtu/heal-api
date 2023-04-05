@@ -1,10 +1,14 @@
-import { MyContext } from "src/types";
-import { MiddlewareFn } from "type-graphql";
+import { MyContext } from 'src/types';
+import { MiddlewareFn } from 'type-graphql';
 
-export const isAllowed = (roles: string[]): MiddlewareFn<MyContext> => {
-  return async ({ context }, next) => {
-    if (!roles.includes(context.req.session.role)) {
-      throw new Error("You are not allowed to perform this action!");
+export const isAllowed = (allowedRoles: string[]): MiddlewareFn<MyContext> => {
+  return async ({ context }: { context: MyContext }, next) => {
+    const userRole = context.req.session.role;
+    if (!userRole || !allowedRoles.includes(userRole)) {
+      return context.res.status(401).json({
+        status: false,
+        error: { target: 'general', message: 'You are not authorized to access this resource.' }
+      });
     }
     return next();
   };

@@ -6,7 +6,7 @@ export const customSecret =
   "dfbvrttg45gterg43344rGHGYT7Ygyg&&ggyg&&ggygGYGGFF^YYHKH*888HYUHJGGH"; //not in prod
 export const COOKIE_NAME = "hid";
 export const FRONT_END_ORIGIN = "http://localhost:3000";
-export const DB_NAME = "healDB";
+export const DB_NAME = "HealDB";
 export const DB_USER = "postgres";
 export const DB_PASSWORD = "sam582XTU";
 export const DB_TYPE = "postgres";

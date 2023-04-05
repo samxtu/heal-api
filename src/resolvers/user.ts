@@ -21,8 +21,16 @@ import {
 import { sendEmail } from "../utils/sendEmail";
 import { v4 } from "uuid";
 import { isAuth } from "../middleware/isAuth";
-import { getRepository, In } from "typeorm";
-import { isAllowed } from "src/middleware/isAllowed";
+import { In } from "typeorm";
+import { isAllowed } from "../middleware/isAllowed";
+
+@ObjectType()
+export class FieldError {
+  @Field()
+  target?: string;
+  @Field()
+  message: string;
+}
 
 @InputType()
 class EmailPasswordArgs {
@@ -41,67 +49,39 @@ export class BooleanResponse {
 }
 
 @InputType()
-class RegisterArgs {
+class RegisterUserArgs {
   @Field()
-  name: string;
+  firstname: string;
+  @Field()
+  middlename: string;
+  @Field()
+  lastname: string;
   @Field()
   email: string;
   @Field()
   phone: string;
   @Field()
   location: string;
-  @Field(() => Float)
-  maxCredit: number;
-  @Field()
-  creditDays: number;
-  @Field()
-  credit: boolean;
-  @Field(() => Float)
-  balance: number;
-  @Field(() => Float)
-  salary: number;
-  @Field()
-  roleId: number;
-  @Field()
-  branchId: number;
   @Field()
   password: string;
 }
 
 @InputType()
-class EditArgs {
+class EditUserArgs {
   @Field()
-  name: string;
+  firstname: string;
+  @Field()
+  middlename: string;
+  @Field()
+  lastname: string;
   @Field()
   email: string;
   @Field()
   phone: string;
   @Field()
   location: string;
-  @Field(() => Float)
-  maxCredit: number;
-  @Field()
-  creditDays: number;
-  @Field()
-  credit: boolean;
   @Field()
   status: boolean;
-  @Field(() => Float)
-  balance: number;
-  @Field(() => Float)
-  salary: number;
-  @Field()
-  roleId: number;
-  @Field()
-  branchId: number;
-}
-
-@ObjectType()
-export class FieldError {
-  @Field()
-  target?: string;
-  @Field()
-  message: string;
 }
 
 @ObjectType()
@@ -187,23 +167,19 @@ export class UserResolver {
 
   @Mutation(() => BooleanResponse)
   async register(
-    @Arg("params") params: RegisterArgs
+    @Arg("params") params: RegisterUserArgs
   ): Promise<BooleanResponse> {
     const hashedPassword = await dragon.hash(params.password);
     let user: User;
     try {
       user = await User.create({
-        name: params.name,
+        firstname: params.firstname,
+        middlename: params.middlename ? params.middlename : "",
+        lastname: params.lastname,
         email: params.email.toLowerCase(),
         phone: params.phone,
         location: params.location,
-        maxCredit: params.maxCredit,
-        creditDays: params.creditDays,
-        credit: params.credit,
         status: true,
-        balance: params.balance,
-        salary: params.salary,
-        roleId: params.roleId,
         password: hashedPassword,
       }).save();
       console.log("user: ", user);
@@ -231,7 +207,7 @@ export class UserResolver {
   @Mutation(() => BooleanResponse)
   async editUser(
     @Arg("id") id: number,
-    @Arg("params") params: EditArgs
+    @Arg("params") params: EditUserArgs
   ): Promise<BooleanResponse> {
     const user = await User.findOne(id);
     if (!user)
@@ -263,7 +239,7 @@ export class UserResolver {
     console.log(req.session.userId);
     const similarUser = await User.findOne({
       where: { email: params.email.toLowerCase() },
-      relations: ["role", "branch"],
+      relations: ["role"],
     });
     if (!similarUser)
       return {
@@ -278,6 +254,14 @@ export class UserResolver {
         error: {
           target: "general",
           message: "incorrect credentials!",
+        },
+      };
+    }
+    if(similarUser.status === false) {
+      return {
+        error: {
+          target: "general",
+          message: "User is not active!",
         },
       };
     }
@@ -316,17 +300,17 @@ export class UserResolver {
 
   @Query(() => [User])
   @UseMiddleware(isAuth)
-  @UseMiddleware(isAllowed(["admin"]))
+  @UseMiddleware(isAllowed(["admin2"]))
   async getUsers(
     @Arg("roles", () => [Float], { nullable: true }) roles: number[]
   ): Promise<User[]> {
     let reqRes: User[] = [];
     if (roles === null || roles === undefined || roles.length === 0)
-      reqRes = await User.find({ relations: ["role", "branch"] });
+      reqRes = await User.find({ relations: ["role"] });
     else
       reqRes = await User.find({
         where: { roleId: In(roles) },
-        relations: ["role", "branch"],
+        relations: ["role"],
       });
     return reqRes;
   }

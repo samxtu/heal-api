@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserResolver = exports.FieldError = void 0;
+exports.UserResolver = exports.BooleanResponse = exports.FieldError = void 0;
 const User_1 = require("../entities/User");
 const type_graphql_1 = require("type-graphql");
 const argon2_1 = __importDefault(require("argon2"));
@@ -32,127 +32,8 @@ const constants_1 = require("../constants");
 const sendEmail_1 = require("../utils/sendEmail");
 const uuid_1 = require("uuid");
 const isAuth_1 = require("../middleware/isAuth");
-const branch_1 = require("./branch");
 const typeorm_1 = require("typeorm");
-let EmailPasswordArgs = class EmailPasswordArgs {
-};
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], EmailPasswordArgs.prototype, "email", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], EmailPasswordArgs.prototype, "password", void 0);
-EmailPasswordArgs = __decorate([
-    (0, type_graphql_1.InputType)()
-], EmailPasswordArgs);
-let RegisterArgs = class RegisterArgs {
-};
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], RegisterArgs.prototype, "name", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], RegisterArgs.prototype, "email", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], RegisterArgs.prototype, "phone", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], RegisterArgs.prototype, "location", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(() => type_graphql_1.Float),
-    __metadata("design:type", Number)
-], RegisterArgs.prototype, "maxCredit", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", Number)
-], RegisterArgs.prototype, "creditDays", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", Boolean)
-], RegisterArgs.prototype, "credit", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(() => type_graphql_1.Float),
-    __metadata("design:type", Number)
-], RegisterArgs.prototype, "balance", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(() => type_graphql_1.Float),
-    __metadata("design:type", Number)
-], RegisterArgs.prototype, "salary", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", Number)
-], RegisterArgs.prototype, "roleId", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", Number)
-], RegisterArgs.prototype, "branchId", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], RegisterArgs.prototype, "password", void 0);
-RegisterArgs = __decorate([
-    (0, type_graphql_1.InputType)()
-], RegisterArgs);
-let EditArgs = class EditArgs {
-};
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], EditArgs.prototype, "name", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], EditArgs.prototype, "email", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], EditArgs.prototype, "phone", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], EditArgs.prototype, "location", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(() => type_graphql_1.Float),
-    __metadata("design:type", Number)
-], EditArgs.prototype, "maxCredit", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", Number)
-], EditArgs.prototype, "creditDays", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", Boolean)
-], EditArgs.prototype, "credit", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", Boolean)
-], EditArgs.prototype, "status", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(() => type_graphql_1.Float),
-    __metadata("design:type", Number)
-], EditArgs.prototype, "balance", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(() => type_graphql_1.Float),
-    __metadata("design:type", Number)
-], EditArgs.prototype, "salary", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", Number)
-], EditArgs.prototype, "roleId", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", Number)
-], EditArgs.prototype, "branchId", void 0);
-EditArgs = __decorate([
-    (0, type_graphql_1.InputType)()
-], EditArgs);
+const isAllowed_1 = require("../middleware/isAllowed");
 let FieldError = class FieldError {
 };
 __decorate([
@@ -167,6 +48,99 @@ FieldError = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], FieldError);
 exports.FieldError = FieldError;
+let EmailPasswordArgs = class EmailPasswordArgs {
+};
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], EmailPasswordArgs.prototype, "email", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], EmailPasswordArgs.prototype, "password", void 0);
+EmailPasswordArgs = __decorate([
+    (0, type_graphql_1.InputType)()
+], EmailPasswordArgs);
+let BooleanResponse = class BooleanResponse {
+};
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", Boolean)
+], BooleanResponse.prototype, "status", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(() => FieldError, { nullable: true }),
+    __metadata("design:type", FieldError)
+], BooleanResponse.prototype, "error", void 0);
+BooleanResponse = __decorate([
+    (0, type_graphql_1.ObjectType)()
+], BooleanResponse);
+exports.BooleanResponse = BooleanResponse;
+let RegisterUserArgs = class RegisterUserArgs {
+};
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], RegisterUserArgs.prototype, "firstname", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], RegisterUserArgs.prototype, "middlename", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], RegisterUserArgs.prototype, "lastname", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], RegisterUserArgs.prototype, "email", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], RegisterUserArgs.prototype, "phone", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], RegisterUserArgs.prototype, "location", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], RegisterUserArgs.prototype, "password", void 0);
+RegisterUserArgs = __decorate([
+    (0, type_graphql_1.InputType)()
+], RegisterUserArgs);
+let EditUserArgs = class EditUserArgs {
+};
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], EditUserArgs.prototype, "firstname", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], EditUserArgs.prototype, "middlename", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], EditUserArgs.prototype, "lastname", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], EditUserArgs.prototype, "email", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], EditUserArgs.prototype, "phone", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], EditUserArgs.prototype, "location", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", Boolean)
+], EditUserArgs.prototype, "status", void 0);
+EditUserArgs = __decorate([
+    (0, type_graphql_1.InputType)()
+], EditUserArgs);
 let UserResponse = class UserResponse {
 };
 __decorate([
@@ -243,18 +217,13 @@ let UserResolver = class UserResolver {
             let user;
             try {
                 user = yield User_1.User.create({
-                    name: params.name,
+                    firstname: params.firstname,
+                    middlename: params.middlename ? params.middlename : "",
+                    lastname: params.lastname,
                     email: params.email.toLowerCase(),
                     phone: params.phone,
                     location: params.location,
-                    maxCredit: params.maxCredit,
-                    creditDays: params.creditDays,
-                    credit: params.credit,
                     status: true,
-                    balance: params.balance,
-                    salary: params.salary,
-                    roleId: params.roleId,
-                    branchId: params.branchId,
                     password: hashedPassword,
                 }).save();
                 console.log("user: ", user);
@@ -309,7 +278,7 @@ let UserResolver = class UserResolver {
             console.log(req.session.userId);
             const similarUser = yield User_1.User.findOne({
                 where: { email: params.email.toLowerCase() },
-                relations: ["role", "branch"],
+                relations: ["role"],
             });
             if (!similarUser)
                 return {
@@ -327,7 +296,16 @@ let UserResolver = class UserResolver {
                     },
                 };
             }
+            if (similarUser.status === false) {
+                return {
+                    error: {
+                        target: "general",
+                        message: "User is not active!",
+                    },
+                };
+            }
             req.session.userId = similarUser.id;
+            req.session.role = similarUser.role.name;
             return { user: similarUser };
         });
     }
@@ -337,7 +315,7 @@ let UserResolver = class UserResolver {
                 where: {
                     id: req.session.userId,
                 },
-                relations: ["role", "branch"],
+                relations: ["role"],
             });
             return meUser;
         });
@@ -364,33 +342,23 @@ let UserResolver = class UserResolver {
         return __awaiter(this, void 0, void 0, function* () {
             let reqRes = [];
             if (roles === null || roles === undefined || roles.length === 0)
-                reqRes = yield User_1.User.find({ relations: ["role", "branch"] });
+                reqRes = yield User_1.User.find({ relations: ["role"] });
             else
-                reqRes = yield User_1.User.find({ where: { roleId: (0, typeorm_1.In)(roles) }, relations: ["role", "branch"] });
+                reqRes = yield User_1.User.find({
+                    where: { roleId: (0, typeorm_1.In)(roles) },
+                    relations: ["role"],
+                });
             return reqRes;
         });
     }
     getUser(id) {
         return User_1.User.findOne(id, {
-            relations: [
-                "role",
-                "branch",
-                "payments",
-                "suppliedPurchases",
-                "attendances",
-                "collections",
-                "sheet",
-                "incentives",
-                "servedSales",
-                "initiatedSales",
-                "authorizedExpenses",
-                "receivedExpenses",
-            ],
+            relations: ["role"],
         });
     }
 };
 __decorate([
-    (0, type_graphql_1.Mutation)(() => branch_1.BooleanResponse),
+    (0, type_graphql_1.Mutation)(() => BooleanResponse),
     __param(0, (0, type_graphql_1.Arg)("email")),
     __param(1, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
@@ -407,18 +375,18 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "resetPassword", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(() => branch_1.BooleanResponse),
+    (0, type_graphql_1.Mutation)(() => BooleanResponse),
     __param(0, (0, type_graphql_1.Arg)("params")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [RegisterArgs]),
+    __metadata("design:paramtypes", [RegisterUserArgs]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "register", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(() => branch_1.BooleanResponse),
+    (0, type_graphql_1.Mutation)(() => BooleanResponse),
     __param(0, (0, type_graphql_1.Arg)("id")),
     __param(1, (0, type_graphql_1.Arg)("params")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, EditArgs]),
+    __metadata("design:paramtypes", [Number, EditUserArgs]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "editUser", null);
 __decorate([
@@ -446,6 +414,7 @@ __decorate([
 __decorate([
     (0, type_graphql_1.Query)(() => [User_1.User]),
     (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
+    (0, type_graphql_1.UseMiddleware)((0, isAllowed_1.isAllowed)(["admin2"])),
     __param(0, (0, type_graphql_1.Arg)("roles", () => [type_graphql_1.Float], { nullable: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Array]),
@@ -462,4 +431,4 @@ UserResolver = __decorate([
     (0, type_graphql_1.Resolver)(User_1.User)
 ], UserResolver);
 exports.UserResolver = UserResolver;
-//# sourceMappingURL=User.js.map
+//# sourceMappingURL=user.js.map

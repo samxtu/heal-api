@@ -9,18 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAuth = void 0;
-const isAuth = ({ context }, next) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!context.req.session.userId) {
-        return context.res.status(401).json({
-            status: false,
-            error: {
-                target: "general",
-                message: "You are not authenticated.",
-            },
-        });
-    }
-    return next();
-});
-exports.isAuth = isAuth;
-//# sourceMappingURL=isAuth.js.map
+exports.isAllowed = void 0;
+const isAllowed = (allowedRoles) => {
+    return ({ context }, next) => __awaiter(void 0, void 0, void 0, function* () {
+        const userRole = context.req.session.role;
+        if (!userRole || !allowedRoles.includes(userRole)) {
+            return context.res.status(401).json({
+                status: false,
+                error: { target: 'general', message: 'You are not authorized to access this resource.' }
+            });
+        }
+        return next();
+    });
+};
+exports.isAllowed = isAllowed;
+//# sourceMappingURL=isAllowed.js.map

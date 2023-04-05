@@ -7,10 +7,10 @@ exports.EMAIL_SERVER = exports.SENDER_EMAIL_PASSWORD = exports.SENDER_EMAIL = ex
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 exports.__prod__ = process.env.NODE_ENV === "production";
-exports.customSecret = "jiferwiufhcruhvirfhviurhfgviruhfgti";
+exports.customSecret = "dfbvrttg45gterg43344rGHGYT7Ygyg&&ggyg&&ggygGYGGFF^YYHKH*888HYUHJGGH";
 exports.COOKIE_NAME = "hid";
 exports.FRONT_END_ORIGIN = "http://localhost:3000";
-exports.DB_NAME = "halisiaDB";
+exports.DB_NAME = "HealDB";
 exports.DB_USER = "postgres";
 exports.DB_PASSWORD = "sam582XTU";
 exports.DB_TYPE = "postgres";

@@ -4,10 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -29,8 +26,16 @@ export class User extends BaseEntity {
   updatedAt = new Date();
 
   @Field()
-  @Column({ type: "text", unique: true })
-  name!: string;
+  @Column({ type: "text" })
+  firstname!: string;
+
+  @Field()
+  @Column({ type: "text" })
+  middlename: string;
+
+  @Field()
+  @Column({ type: "text" })
+  lastname!: string;
 
   @Field()
   @Column({ type: "text", unique: true })
@@ -45,32 +50,8 @@ export class User extends BaseEntity {
   location: string;
 
   @Field()
-  @Column({ type: "bigint" })
-  maxCredit: number;
-
-  @Field()
-  @Column({ type: "int" })
-  creditDays: number;
-
-  @Field()
-  @Column({ default: true })
-  credit: boolean;
-
-  @Field()
   @Column({ default: true })
   status: boolean;
-
-  @Field()
-  @Column({ type: "bigint", default: 0 })
-  balance: number;
-
-  @Field()
-  @Column({ type: "bigint", default: 0 })
-  salary: number;
-
-  @Field()
-  @Column({ type: "int" })
-  roleId: number;
 
   @Field(() => Role)
   @ManyToOne(() => Role, (role) => role.users)
